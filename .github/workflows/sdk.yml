@@ -7,6 +7,10 @@ on:
       target:
         required: true
         type: string
+      container:
+        required: false
+        type: string
+        default: ''
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -15,6 +19,7 @@ env:
 jobs:
   build:
     runs-on: ${{ inputs.runsOn }}
+    container: ${{ inputs.container }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
@@ -53,7 +58,7 @@ jobs:
         if: ${{ inputs.target == 'Linux' && steps.cache.outputs.cache-hit != 'true' }}
         run: |
           sudo apt-get update
-          sudo apt-get install zlib1g-dev libcurl4-openssl-dev libssl-dev
+          sudo apt-get install -y zlib1g-dev libcurl4-openssl-dev libssl-dev cmake
 
       - name: Build
         if: steps.cache.outputs.cache-hit != 'true'
